@@ -66,7 +66,7 @@
 import { reactive } from 'vue'
 import Footer from '@/components/footer'
 
-const url = "https://vue-notice-board.firebaseio.com/board.json"
+const url = "https://vue-notice-board.firebaseio.com/board/list.json"
 
 export default {
   components : { Footer },

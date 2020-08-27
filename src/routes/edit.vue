@@ -58,7 +58,7 @@
 import { reactive } from 'vue'
 import Footer from '@/components/footer'
 
-const url = "https://vue-notice-board.firebaseio.com/board"
+const url = "https://vue-notice-board.firebaseio.com/board/list"
 
 export default {
   components : { Footer },
@@ -76,7 +76,7 @@ export default {
     });
 
     function onUpdate() {
-      board.date = new Date();
+      board.data.date = new Date();
       fetch(url+title, {
         method: 'PUT',
         body: JSON.stringify(board.data),

@@ -1,11 +1,12 @@
 import { reactive } from 'vue'
 
-const url = "https://vue-notice-board.firebaseio.com/board.json"
+const url = "https://vue-notice-board.firebaseio.com/board/list.json"
 
 let boardList = reactive({
   data: []
 });
 fetch(url).then(res => res.json()).then(j => {
+  console.log(j);
   Object.keys(j).map(arr => {
     j[arr].id = arr;
   })
