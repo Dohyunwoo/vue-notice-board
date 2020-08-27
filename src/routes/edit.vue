@@ -3,24 +3,25 @@
     <img class="uk-align-center"
       data-src="/images/logo.png" width="200"
       height="auto" alt="로고 이미지" uk-img>
-    <form class="uk-form-stacked" v-on:submit.prevent="onSubmit">
+    <form class="uk-form-stacked" v-on:submit.prevent="onUpdate">
       <fieldset class="uk-fieldset">
-        <legend class="uk-legend">글 작성 하기</legend>
+        <legend class="uk-legend">글 수정 하기</legend>
         <div class="uk-margin uk-flex">
           <div class="uk-margin-large-right">
             <label class="uk-form-label"
               for="form-stacked-user">작 성 자</label>
             <div class="uk-form-controls">
-              <input class="uk-input" v-model="board.user"
-                id="form-stacked-user">
+              <input class="uk-input" v-model="board.data.user"
+                id="form-stacked-user" disabled>
             </div>
           </div>
           <div>
             <label class="uk-form-label"
               for="form-stacked-password">패 스 워 드</label>
             <div class="uk-form-controls">
-              <input class="uk-input" type="password" v-model="board.pwd"
-                id="form-stacked-password">
+              <input class="uk-input" type="password"
+                v-model="board.data.pwd"
+                id="form-stacked-password" disabled>
             </div>
           </div>
         </div>
@@ -29,7 +30,7 @@
             for="form-stacked-title">제 목</label>
           <div class="uk-form-controls">
             <input class="uk-input" id="form-stacked-title"
-              v-model="board.title">
+              v-model="board.data.title">
           </div>
         </div>
         <div class="uk-margin">
@@ -37,14 +38,14 @@
             for="form-stacked-text">내 용</label>
           <div class="uk-form-controls">
             <textarea class="uk-textarea" style="resize: none;"
-              id="form-stacked-text" rows="5" v-model="board.text">
+              id="form-stacked-text" rows="5" v-model="board.data.text">
             </textarea>
           </div>
         </div>
         <div class="uk-flex uk-flex-right">
           <button class="uk-button uk-button-primary uk-margin-right">
-            등  록</button>
-          <router-link to="/">
+            수  정</button>
+          <router-link :to="{ name: 'read', params: { id: board.id }}">
             <button class="uk-button uk-button-danger">취  소</button>
           </router-link>
         </div>
@@ -56,33 +57,42 @@
 <script>
 import { reactive } from 'vue'
 import Footer from '@/components/footer'
-import router from '../router'
 
-const url = "https://vue-notice-board.firebaseio.com/board.json"
+const url = "https://vue-notice-board.firebaseio.com/board"
 
 export default {
   components : { Footer },
   setup() {
-    let board = reactive({});
-    function onSubmit() {
+    let board = reactive({
+      data : {},
+      id : location.pathname.split('/')[2]
+    });
+    const title = `/${location.pathname.split('/')[2]}.json`;
+    fetch(url+title).then(res => res.json()).then(response => {
+      board.data = response;
+    }).catch(error => {
+      console.error('Error:', error);
+      alert("글을 읽어 오는데 실패했습니다.")
+    });
+
+    function onUpdate() {
       board.date = new Date();
-      fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(board),
+      fetch(url+title, {
+        method: 'PUT',
+        body: JSON.stringify(board.data),
         headers:{'Content-Type': 'application/json'}
       }).then(res => res.json()).then(response => {
         console.log('Success:', JSON.stringify(response))
-        alert("글이 작성되었습니다.")
-        return response.name
+        alert("글이 수정 되었습니다.")
       }).catch(error => {
         console.error('Error:', error);
-        alert("글 작성이 실패했습니다.")
-      }).finally(title => {
+        alert("글 수정이  실패했습니다.")
+      }).finally(() => {
         board = {};
-        router.go(`/read/${title}`);
+        location.replace(`/read/${location.pathname.split('/')[2]}`);
       });
     }
-    return { board, onSubmit }
+    return { board, onUpdate }
   }
 }
 </script>

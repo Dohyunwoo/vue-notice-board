@@ -5,31 +5,40 @@
       height="auto" alt="로고 이미지" uk-img>
     <form class="uk-form-stacked" v-on:submit.prevent="onSubmit">
       <fieldset class="uk-fieldset">
-        <legend class="uk-legend">글 작성 하기</legend>
+        <legend class="uk-legend">
+          글 작성 하기 
+          <span class="uk-text-meta">* 표시는 필수 입력 사항입니다.</span>
+        </legend>
         <div class="uk-margin uk-flex">
           <div class="uk-margin-large-right">
             <label class="uk-form-label"
-              for="form-stacked-user">작 성 자</label>
+              for="form-stacked-user">
+              작 성 자 <span class="uk-text-danger">*</span>
+            </label>
             <div class="uk-form-controls">
               <input class="uk-input" v-model="board.user"
-                id="form-stacked-user">
+                id="form-stacked-user" required>
             </div>
           </div>
           <div>
             <label class="uk-form-label"
-              for="form-stacked-password">패 스 워 드</label>
+              for="form-stacked-password">
+              패 스 워 드 <span class="uk-text-danger">*</span>
+            </label>
             <div class="uk-form-controls">
               <input class="uk-input" type="password" v-model="board.pwd"
-                id="form-stacked-password">
+                id="form-stacked-password" required>
             </div>
           </div>
         </div>
         <div class="uk-margin">
           <label class="uk-form-label"
-            for="form-stacked-title">제 목</label>
+            for="form-stacked-title">
+            제 목 <span class="uk-text-danger">*</span>
+          </label>
           <div class="uk-form-controls">
             <input class="uk-input" id="form-stacked-title"
-              v-model="board.title">
+              v-model="board.title" required>
           </div>
         </div>
         <div class="uk-margin">

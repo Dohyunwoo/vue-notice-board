@@ -11,10 +11,10 @@
         <p v-html="board.data.text"></p>
       </div>
       <div class="uk-flex uk-flex-right">
-        <!-- router-link to="board.editUrl">
+        <router-link :to="{ name: 'edit', params: { id: board.editUrl }}">
           <button class="uk-button uk-button-primary
-            uk-margin-large-right">수정 하기</button>
-        </router-link -->
+            uk-margin-right">수정 하기</button>
+        </router-link>
         <router-link to="/">
           <button class="uk-button uk-button-danger">목록 으로</button>
         </router-link>
@@ -33,7 +33,7 @@ export default {
   setup() {
     let board = reactive({
       data : {},
-      editUrl : `/edit/${location.pathname.split('/')[2]}`
+      editUrl : location.pathname.split('/')[2]
     });
     const title = `/${location.pathname.split('/')[2]}.json`;
     fetch(url+title).then(res => res.json()).then(response => {
