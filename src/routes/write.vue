@@ -4,7 +4,7 @@
       data-src="/images/logo.png" width="200"
       height="auto" alt="로고 이미지" uk-img>
     <form class="uk-form-stacked" v-on:submit.prevent="onSubmit">
-      <fieldset class="uk-fieldset">
+      <fieldset class="uk-fieldset" :disabled="busy">
         <legend class="uk-legend">
           글 작성 하기 
           <span class="uk-text-meta">* 표시는 필수 입력 사항입니다.</span>
@@ -64,6 +64,7 @@
 </template>
 <script>
 import { reactive } from 'vue'
+import { ref } from 'vue'
 import Footer from '@/components/footer'
 
 const url = "https://vue-notice-board.firebaseio.com/board/list.json"
@@ -71,9 +72,11 @@ const url = "https://vue-notice-board.firebaseio.com/board/list.json"
 export default {
   components : { Footer },
   setup() {
+    const busy = ref(false);
     let board = reactive({});
     let title = "";
     function onSubmit() {
+      busy.value = true;
       board.date = new Date();
       fetch(url, {
         method: 'POST',
@@ -87,11 +90,12 @@ export default {
         console.error('Error:', error);
         alert("글 작성이 실패했습니다.")
       }).finally(() => {
+        busy.value = false;
         board = {};
         location.replace(`/read/${title}`);
       });
     }
-    return { board, onSubmit }
+    return { board, onSubmit, busy }
   }
 }
 </script>
