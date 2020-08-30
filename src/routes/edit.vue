@@ -4,7 +4,7 @@
       data-src="/images/logo.png" width="200"
       height="auto" alt="로고 이미지" uk-img>
     <form class="uk-form-stacked" v-on:submit.prevent="onUpdate">
-      <fieldset class="uk-fieldset">
+      <fieldset class="uk-fieldset" :disabled="busy">
         <legend class="uk-legend">글 수정 하기</legend>
         <div class="uk-margin uk-flex">
           <div class="uk-margin-large-right">
@@ -56,6 +56,7 @@
 </template>
 <script>
 import { reactive } from 'vue'
+import { ref } from 'vue'
 import Footer from '@/components/footer'
 
 const url = "https://vue-notice-board.firebaseio.com/board/list"
@@ -63,6 +64,7 @@ const url = "https://vue-notice-board.firebaseio.com/board/list"
 export default {
   components : { Footer },
   setup() {
+    const busy = ref(true);
     let board = reactive({
       data : {},
       id : location.pathname.split('/')[2]
@@ -73,9 +75,12 @@ export default {
     }).catch(error => {
       console.error('Error:', error);
       alert("글을 읽어 오는데 실패했습니다.")
+    }).finally(() => {
+      busy.value = false;
     });
 
     function onUpdate() {
+      busy.value = true;
       board.data.date = new Date();
       fetch(url+title, {
         method: 'PUT',
@@ -88,11 +93,12 @@ export default {
         console.error('Error:', error);
         alert("글 수정이  실패했습니다.")
       }).finally(() => {
+        busy.value = false;
         board = {};
         location.replace(`/read/${location.pathname.split('/')[2]}`);
       });
     }
-    return { board, onUpdate }
+    return { board, onUpdate, busy }
   }
 }
 </script>
